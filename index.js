@@ -72,6 +72,20 @@ app.get("/file/:hash", (req, res) => {
   });
 });
 
+app.get("/index", (req, res) => {
+  db.all("SELECT * FROM files", [], (err, rows) => {
+    if (err)
+      return res.status(500).redirect("/upload");
+
+    if (!rows)
+      return res.status(400).redirect("/upload");
+
+    res.render("index", {
+      rows: rows
+    });
+  });
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

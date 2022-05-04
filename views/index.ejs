@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+        table {
+            border: 1px solid black;
+        }
+        tr td {
+            border: 1px solid black;
+        }
+    </style>
+    <title>scatterflower.online</title>
+  </head>
+  <body>
+    <center>
+      <table>
+          <tr>
+            <th>Filename</th>
+            <th>MIME Type</th>
+            <th>Link</th>
+          </tr>
+          <% for(let i = 0; i < locals.rows.length; i++) { %>
+            <tr>
+                <td><a href="file/<%= locals.rows[i].hash %>"><%= locals.rows[i].filename %></a></td>
+                <td><%= locals.rows[i].mime %></td>
+                <td><%= locals.rows[i].hash %></td>
+            </tr>
+          <% } %>
+      </table>
+    </center>
+  </body>
+</html>

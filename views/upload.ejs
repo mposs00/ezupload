@@ -9,6 +9,10 @@
       <form ref="uploadForm" id="uploadForm" action="upload" method="post" enctype="multipart/form-data">
         <input type="file" name="uploaded">
         <input type="submit" value="upload">
+        <br>
+        <% if (locals.file_link) { %>
+        <a href="<%= locals.file_link %>">Uploaded file</a>
+        <% } %>
       </form>
     </center>
   </body>

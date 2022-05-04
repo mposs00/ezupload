@@ -14,16 +14,21 @@ app.use(fileUpload({
   limits: { fileSize: 50 * 1024 * 1024 }
 }));
 
+app.set("view engine", "ejs");
+
 app.get('/upload', (req, res) => {
-  res.sendFile(__dirname + "/static/index.html");
+  res.render("upload");
+});
+
+app.get("/upload/:hash", (req, res) => {
+  res.render("upload", {
+    file_link: `/file/${req.params.hash}`
+  });
 });
 
 app.post('/upload', (req, res) => {
-  console.log(req.files);
-  
-  if (!req.files || Object.keys(req.files).length === 0) {
+  if (!req.files || Object.keys(req.files).length === 0)
     return res.status(400).redirect("/upload");
-  }
   
   file = req.files.uploaded;
 
@@ -40,20 +45,12 @@ app.post('/upload', (req, res) => {
           if (err)
             return res.status(500).redirect("/upload");
           
-          return res.status(201).redirect(`/success/${file.md5}`);
+          return res.status(201).redirect(`/file/${file.md5}`);
         });
       });
     }
-    else res.send(file.md5);
-
-    console.log(row);
+    else return res.redirect(`/upload/${file.md5}`);
   });
-});
-
-app.get("/success/:hash", (req, res) => {
-  if (!req.params.hash)
-    return res.status(404).redirect("/upload");
-  res.send(`<a href="/file/${req.params.hash}">Upload successful!</a>`);
 });
 
 app.get("/file/:hash", (req, res) => {
@@ -69,8 +66,7 @@ app.get("/file/:hash", (req, res) => {
       return res.status(404).redirect("/upload");
 
     res.setHeader("Content-Type", row.mime);
-    if (!row.mime.includes("image"))
-      res.setHeader("Content-Disposition", `attachment; filename=${row.filename}`);
+    res.setHeader("Content-Disposition", `inline; filename=${row.filename}`);
     res.writeHead(200);
     res.end(fs.readFileSync(`${__dirname}/upload/${hash}`));
   });
